@@ -49,6 +49,24 @@
       </article>`;
   }
 
+  function emptyStateHtml() {
+    return `
+      <div class="empty">
+        <div class="empty__title">Ничего не найдено</div>
+        <p class="empty__hint">Попробуйте изменить запрос, выбрать другую категорию или город, либо расширить диапазон цены.</p>
+        <button type="button" id="reset" class="empty__reset">Сбросить фильтры</button>
+      </div>`;
+  }
+
+  function resetFilters() {
+    els.query.value = '';
+    els.category.value = '';
+    els.city.value = '';
+    els.priceFrom.value = '';
+    els.priceTo.value = '';
+    render();
+  }
+
   function currentFilters() {
     return {
       query: els.query.value,
@@ -62,11 +80,14 @@
   function render() {
     const items = filterListings(window.LISTINGS, currentFilters());
     els.count.textContent = `Найдено ${items.length} ${plural(items.length, 'объявление', 'объявления', 'объявлений')}`;
-    els.list.innerHTML = items.map(cardHtml).join('');
+    els.list.innerHTML = items.length ? items.map(cardHtml).join('') : emptyStateHtml();
   }
 
   document.querySelectorAll('.header input, .filters input, .filters select').forEach((el) => {
     el.addEventListener('input', render);
+  });
+  els.list.addEventListener('click', (event) => {
+    if (event.target.id === 'reset') resetFilters();
   });
   render();
 })();
