@@ -32,6 +32,7 @@
   }
 
   function formatPrice(item) {
+    if (!item.price) return 'Цена договорная';
     const value = priceFormat.format(item.price) + ' ₽';
     return item.category === 'Работа' ? 'от ' + value : value;
   }
