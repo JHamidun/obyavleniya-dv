@@ -16,11 +16,22 @@
       .trim();
   }
 
-  // Every word of the query must occur in the title or the city.
-  function matchesQuery(item, query) {
+  // perf: normalize every listing once instead of on every keystroke
+  const indexCache = new WeakMap();
+  function buildIndex(listings) {
+    if (!indexCache.has(listings)) {
+      indexCache.set(listings, listings.map((item) => ({
+        item,
+        title: normalize(item.title),
+        city: normalize(item.city),
+      })));
+    }
+    return indexCache.get(listings);
+  }
+
+  function matchesQuery(entry, query) {
     if (!query) return true;
-    const haystack = normalize(item.title + ' ' + item.city);
-    return query.split(' ').every((word) => haystack.includes(word));
+    return query.split(' ').every((word) => entry.title.includes(word));
   }
 
   // "" / null / "abc" -> null, "1500" -> 1500
@@ -36,14 +47,16 @@
     const query = normalize(f.query);
     const priceFrom = toNumber(f.priceFrom);
     const priceTo = toNumber(f.priceTo);
-    return listings.filter((item) => {
-      if (!matchesQuery(item, query)) return false;
-      if (f.category && item.category !== f.category) return false;
-      if (f.city && item.city !== f.city) return false;
-      if (priceFrom !== null && item.price < priceFrom) return false;
-      if (priceTo !== null && item.price > priceTo) return false;
-      return true;
-    });
+    return buildIndex(listings)
+      .filter((entry) => {
+        if (!matchesQuery(entry, query)) return false;
+        if (f.category && entry.item.category !== f.category) return false;
+        if (f.city && entry.city !== f.city) return false;
+        if (priceFrom !== null && entry.item.price < priceFrom) return false;
+        if (priceTo !== null && entry.item.price > priceTo) return false;
+        return true;
+      })
+      .map((entry) => entry.item);
   }
 
   return { normalize, matchesQuery, toNumber, filterListings };
