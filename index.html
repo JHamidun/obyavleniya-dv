@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Объявления ДВ</title>
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="header">
+    <div class="header__inner">
+      <div class="logo">Объявления<span>ДВ</span></div>
+      <label class="search">
+        <input id="query" type="search" placeholder="Поиск: шины, айфон, квартира, Находка" autocomplete="off">
+      </label>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="filters" aria-label="Фильтры">
+      <h2>Фильтры</h2>
+      <div class="field">
+        <label for="category">Категория</label>
+        <select id="category">
+          <option value="">Все категории</option>
+          <option>Автозапчасти</option>
+          <option>Электроника</option>
+          <option>Недвижимость</option>
+          <option>Работа</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="city">Город</label>
+        <select id="city">
+          <option value="">Все города</option>
+          <option>Владивосток</option>
+          <option>Хабаровск</option>
+          <option>Уссурийск</option>
+          <option>Находка</option>
+        </select>
+      </div>
+      <div class="field">
+        <span class="field__label">Цена, ₽</span>
+        <div class="price">
+          <input id="price-from" type="number" min="0" placeholder="от" aria-label="Цена от">
+          <input id="price-to" type="number" min="0" placeholder="до" aria-label="Цена до">
+        </div>
+      </div>
+    </aside>
+
+    <main class="results">
+      <div class="results__head">
+        <h1>Свежие объявления</h1>
+        <span id="count" class="count"></span>
+      </div>
+      <div id="list" class="list"></div>
+    </main>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="search.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
